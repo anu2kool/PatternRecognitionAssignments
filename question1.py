@@ -1,9 +1,9 @@
 # importing necessary libraries
+import matplotlib.pyplot as plt  # for plotting and visualising the dataset
 import numpy as np  # for mathematical operations
 import pandas as pd  # for reading and handling the data
-import matplotlib.pyplot as plt  # for plotting and visualising the dataset
 from sklearn.metrics import accuracy_score, confusion_matrix  # for obtaining accuracy score and confusion matrix
-from sklearn.model_selection import train_test_split  # for splitting the dataset into training and test data
+from sklearn.model_selection import train_test_split  # for splitting the dataset into training data and test data
 
 
 def solve(data_path):
@@ -11,20 +11,10 @@ def solve(data_path):
     class1 = pd.read_csv(data_path + "/class1.txt", names=['column1', 'column2'])
     class2 = pd.read_csv(data_path + "/class2.txt", names=['column1', 'column2'])
 
-    # clean data
-    class1 = class1.reset_index()
-    class1.drop('column2', inplace=True, axis=1)
-    class1.rename(columns={'index': 'column1', 'column1': 'column2'}, inplace=True)
-
-    class2 = class2.reset_index()
-    class2.drop('column2', inplace=True, axis=1)
-    class2.rename(columns={'index': 'column1', 'column1': 'column2'}, inplace=True)
-
     # data consists of two features
     # adding the new column which is the label/class for that data point
     # label 0 for class1
     # label 1 for class2
-    # label 2 for class3
     class1['class'] = 0
     class2['class'] = 1
 
@@ -51,7 +41,9 @@ def solve(data_path):
         """ Compute the parameters of Gaussian distribution.
         """
         mean = features.groupby(target).apply(np.mean).to_numpy()
+        # print(mean)
         var = features.groupby(target).apply(np.var).to_numpy()
+        # print(var)
         return mean, var
 
     def get_likelihood(x, mean, var):
@@ -83,12 +75,29 @@ def solve(data_path):
         predictions = [classes[np.argmax(get_posteriors(vector, prior, mean, var))] for vector in vectors.to_numpy()]
         return predictions
 
+    def show2DScatterPlot():
+        """ Show a 2D scatter plot for the training data and test data with different colours. Also, points for different classes are shown in different colours.
+        """
+        XY_train = pd.concat([X_train, Y_train], axis=1)
+        XY_test = pd.concat([X_test, Y_test], axis=1)
+        XY_train_0 = XY_train[XY_train['class'] == 0]
+        XY_train_1 = XY_train[XY_train['class'] == 1]
+        XY_test_0 = XY_test[XY_test['class'] == 0]
+        XY_test_1 = XY_test[XY_test['class'] == 1]
+        plt.scatter(XY_train_0['column1'], XY_train_0['column2'], label="Training Data Class0")
+        plt.scatter(XY_train_1['column1'], XY_train_1['column2'], label="Training Data Class1")
+        plt.scatter(XY_test_0['column1'], XY_test_0['column2'], label="Test Data Class0")
+        plt.scatter(XY_test_1['column1'], XY_test_1['column2'], label="Test Data Class1")
+        plt.legend()
+        plt.show()
+
     mean, var = get_params(X_train, Y_train)
     priors = get_priors(X_train, Y_train)
     Y_predict = get_predictions(X_test, priors, mean, var)
 
     print('Confusion Matrix\n', confusion_matrix(Y_test, Y_predict))
     print('Accuracy (in %) = {:.3f}'.format(accuracy_score(Y_test, Y_predict) * 100, '\n'))
+    show2DScatterPlot()
 
 
 # solving for real world data

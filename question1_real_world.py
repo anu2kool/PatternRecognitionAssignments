@@ -3,7 +3,7 @@ import numpy as np  # for mathematical operations
 import pandas as pd  # for reading and handling the data
 import matplotlib.pyplot as plt  # for plotting and visualising the dataset
 from sklearn.metrics import accuracy_score, confusion_matrix  # for obtaining accuracy score and confusion matrix
-from sklearn.model_selection import train_test_split  # for splitting the dataset into training and test data
+from sklearn.model_selection import train_test_split  # for splitting the dataset into training data and test data
 
 
 def solve(data_path):
