@@ -1,7 +1,7 @@
 # importing necessary libraries
-import matplotlib.pyplot as plt  # for plotting and visualising the dataset
 import numpy as np  # for mathematical operations
 import pandas as pd  # for reading and handling the data
+import matplotlib.pyplot as plt  # for plotting and visualising the dataset
 from sklearn.metrics import accuracy_score, confusion_matrix  # for obtaining accuracy score and confusion matrix
 from sklearn.model_selection import train_test_split  # for splitting the dataset into training data and test data
 
@@ -37,13 +37,11 @@ def solve(data_path):
     classes = np.unique(y)
     count = len(classes)
 
-    def get_params(features, target):
+    def get_params(vectors, target):
         """ Compute the parameters of Gaussian distribution.
         """
-        mean = features.groupby(target).apply(np.mean).to_numpy()
-        # print(mean)
-        var = features.groupby(target).apply(np.var).to_numpy()
-        # print(var)
+        mean = vectors.groupby(target).apply(np.mean).to_numpy()
+        var = vectors.groupby(target).apply(np.var).to_numpy()
         return mean, var
 
     def get_likelihood(x, mean, var):
@@ -51,11 +49,11 @@ def solve(data_path):
         """
         return np.exp(-(x - mean) ** 2 / (2 * var)) / np.sqrt(2 * np.pi * var)
 
-    def get_priors(features, target):
+    def get_priors(vectors, target):
         """ Compute the prior for each class.
         """
-        rows = features.shape[0]
-        prior = (features.groupby(target).apply(lambda x: len(x)) / rows).to_numpy()
+        rows = vectors.shape[0]
+        prior = (vectors.groupby(target).apply(lambda x: len(x)) / rows).to_numpy()
         return prior
 
     def get_posteriors(x, prior, mean, var):

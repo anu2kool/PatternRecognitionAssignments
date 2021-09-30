@@ -1,7 +1,7 @@
 # importing necessary libraries
-import matplotlib.pyplot as plt  # for plotting and visualising the dataset
 import numpy as np  # for mathematical operations
 import pandas as pd  # for reading and handling the data
+import matplotlib.pyplot as plt  # for plotting and visualising the dataset
 from sklearn.metrics import accuracy_score, confusion_matrix  # for obtaining accuracy score and confusion matrix
 from sklearn.model_selection import train_test_split  # for splitting the dataset into training data and test data
 
@@ -48,19 +48,25 @@ def solve(data_path):
     x2_class_1 = train_class_1['column2']
 
     # generating the histograms for attribute 1 for both the classes
-    x1_class0, bins1_class0, patches1_class0 = plt.hist(x1_class_0, density=True)
-    x1_class1, bins1_class1, patches1_class1 = plt.hist(x1_class_1, density=True)
+    x1_class0, bins1_class0, patches1_class0 = plt.hist(x1_class_0, density=True,
+                                                        label='Training Data Class0 Attribute1')
+    x1_class1, bins1_class1, patches1_class1 = plt.hist(x1_class_1, density=True,
+                                                        label='Training Data Class1 Attribute1')
+    plt.legend()
     plt.show()
 
     # generating the histograms for attribute 2 for both the classes
-    x2_class0, bins2_class0, patches2_class0 = plt.hist(x2_class_0, density=True)
-    x2_class1, bins2_class1, patches2_class1 = plt.hist(x2_class_1, density=True)
+    x2_class0, bins2_class0, patches2_class0 = plt.hist(x2_class_0, density=True,
+                                                        label='Training Data Class0 Attribute2')
+    x2_class1, bins2_class1, patches2_class1 = plt.hist(x2_class_1, density=True,
+                                                        label='Training Data Class1 Attribute2')
+    plt.legend()
     plt.show()
 
     # now predicting the test data based on information retrieved from the histograms for each data
     """
     In this predict function, we are calculating:
-    Probability of the interval in which the data point is lying(for both the dimensions);
+    Probability of the interval in which the data point is lying (for both the dimensions);
     and then finding resultant probability as product of the two probabilities and finding the
     maximum of both the classes.
     """

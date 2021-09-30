@@ -25,7 +25,7 @@ def solve(data_path):
     class3.drop('column2', inplace=True, axis=1)
     class3.rename(columns={'index': 'column1', 'column1': 'column2'}, inplace=True)
 
-    # data consists of two features
+    # data consists of three features
     # adding the new column which is the label/class for that data point
     # label 0 for class1
     # label 1 for class2
@@ -53,11 +53,11 @@ def solve(data_path):
     classes = np.unique(y)
     count = len(classes)
 
-    def get_params(features, target):
+    def get_params(vectors, target):
         """ Compute the parameters of Gaussian distribution.
         """
-        mean = features.groupby(target).apply(np.mean).to_numpy()
-        var = features.groupby(target).apply(np.var).to_numpy()
+        mean = vectors.groupby(target).apply(np.mean).to_numpy()
+        var = vectors.groupby(target).apply(np.var).to_numpy()
         return mean, var
 
     def get_likelihood(x, mean, var):
@@ -65,11 +65,11 @@ def solve(data_path):
         """
         return np.exp(-(x - mean) ** 2 / (2 * var)) / np.sqrt(2 * np.pi * var)
 
-    def get_priors(features, target):
+    def get_priors(vectors, target):
         """ Compute the prior for each class.
         """
-        rows = features.shape[0]
-        prior = (features.groupby(target).apply(lambda x: len(x)) / rows).to_numpy()
+        rows = vectors.shape[0]
+        prior = (vectors.groupby(target).apply(lambda x: len(x)) / rows).to_numpy()
         return prior
 
     def get_posteriors(x, prior, mean, var):
